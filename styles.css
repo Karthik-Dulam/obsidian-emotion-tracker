@@ -59,7 +59,7 @@
 .et-cell {
   min-height: 44px;
   border-radius: 6px;
-  background: var(--background-secondary);
+  background: var(--background-modifier-hover);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -94,7 +94,7 @@
 .et-year-cell {
   height: 14px;
   border-radius: 3px;
-  background: var(--background-secondary);
+  background: var(--background-modifier-hover);
   cursor: pointer;
 }
 .et-year-cell.is-void { background: none; cursor: default; }

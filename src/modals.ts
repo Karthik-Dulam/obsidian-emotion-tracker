@@ -58,9 +58,8 @@ const renderPicker = (
       const row = group.createDiv({ cls: "et-chips" });
       [...new Set(hits)].forEach((e) => chip(row, e));
     }
-    const exact = [...plugin.settings.tracked.map((t) => t.name), ...CHART.flatMap((f) => f.emotions)]
-      .some((e) => e.toLowerCase() === q);
-    if (!exact) {
+    const known = [...plugin.settings.tracked.map((t) => t.name), ...CHART.flatMap((f) => f.emotions)];
+    if (!known.some((e) => e.toLowerCase().includes(q))) {
       const custom = results.createDiv({ cls: "et-chips" });
       const raw = search.value.trim().replace(/\|/g, "/");
       chip(custom, raw[0].toUpperCase() + raw.slice(1)).addClass("et-chip-custom");

@@ -1,0 +1,11 @@
+document.querySelectorAll(".modal-close-button").forEach((b) => b.click());
+await app.plugins.disablePlugin("emotion-tracker"); await app.plugins.enablePlugin("emotion-tracker");
+await new Promise(r=>setTimeout(r,800));
+await app.plugins.plugins["emotion-tracker"].openView();
+const view = app.workspace.getLeavesOfType("emotion-tracker-view")[0].view;
+await new Promise(r=>setTimeout(r,300));
+const mode = window.ET_MODE ?? "week";
+view.tracker.mode = mode;
+view.tracker.offset = mode === "week" ? window.moment("2029-12-30").diff(window.moment().startOf("week"), "weeks") : 4;
+await view.tracker.render();
+return document.querySelectorAll(".et-week, .et-year").length;

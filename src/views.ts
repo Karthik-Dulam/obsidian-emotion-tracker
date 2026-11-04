@@ -9,13 +9,13 @@ type Mode = "week" | "year";
 // Renders a week or year tracker into an element and re-renders on vault changes.
 export class Tracker {
   private offset = 0;
+  private generation = 0;
 
   constructor(private plugin: EmotionTrackerPlugin, private el: HTMLElement, public mode: Mode) {}
 
   async render() {
-    const el = this.el;
-    el.empty();
-    el.addClass("et-tracker");
+    const gen = ++this.generation;
+    const el = createDiv();
     const nav = el.createDiv({ cls: "et-nav" });
     const prev = nav.createEl("button", { cls: "et-icon-btn" });
     setIcon(prev, "chevron-left");
@@ -28,6 +28,9 @@ export class Tracker {
 
     if (this.mode === "week") await this.renderWeek(el, title);
     else await this.renderYear(el, title);
+    if (gen !== this.generation) return;
+    this.el.addClass("et-tracker");
+    this.el.replaceChildren(...Array.from(el.childNodes));
   }
 
   private shift(d: number) {

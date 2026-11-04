@@ -1,0 +1,13 @@
+const p = app.plugins.plugins["emotion-tracker"];
+const s = p.store;
+const data = [["2029-12-30","08:30","Tired"],["2029-12-31","13:00","Excited"],["2030-01-02","05:30","Anxious"],["2030-01-02","09:00","Focused"],["2030-01-02","10:30","Calm"],["2030-01-03","18:00","Grateful"],["2030-01-05","21:30","Lonely"]];
+for (const [d,t,e] of data) await s.addEntry(window.moment(d), t, e, "");
+await s.setMood(window.moment("2030-01-04"), "Happy");
+await app.plugins.disablePlugin("emotion-tracker"); await app.plugins.enablePlugin("emotion-tracker");
+await new Promise(r=>setTimeout(r,800));
+const np = app.plugins.plugins["emotion-tracker"];
+await np.openView();
+const view = app.workspace.getLeavesOfType("emotion-tracker-view")[0].view;
+view.tracker.offset = window.moment("2029-12-30").diff(window.moment().startOf("week"), "weeks");
+await view.tracker.render();
+return view.tracker.offset;
