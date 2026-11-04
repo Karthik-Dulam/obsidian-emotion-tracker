@@ -1,0 +1,10 @@
+{
+  "id": "emotion-tracker",
+  "name": "Emotion Tracker",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.7",
+  "description": "Log emotions into daily note frontmatter and view them as weekly and annual trackers, based on the Therapy in a Nutshell emotion chart.",
+  "author": "Karthik Dulam",
+  "authorUrl": "https://github.com/Karthik-Dulam",
+  "isDesktopOnly": false
+}
