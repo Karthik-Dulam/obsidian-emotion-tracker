@@ -1,70 +1,93 @@
 import { App, Modal, Setting, moment } from "obsidian";
-import { CHART, familiesOf } from "./chart";
+import { CHART, Family, familiesOf } from "./chart";
 import type EmotionTrackerPlugin from "./main";
 
 const hint = (el: HTMLElement, emotion: string) => {
   el.empty();
-  for (const f of familiesOf(emotion)) {
+  const families = familiesOf(emotion);
+  if (!families.length) el.createDiv({ cls: "et-hint-row" }).createSpan({ cls: "et-hint-emotion", text: emotion });
+  for (const f of families) {
     const row = el.createDiv({ cls: "et-hint-row" });
+    row.createSpan({ cls: "et-hint-emotion", text: emotion });
     row.createSpan({ cls: "et-hint-family", text: f.name }).style.backgroundColor = f.color;
     row.createSpan({ cls: "et-hint-action", text: f.action });
   }
 };
 
-// Chip grid of tracked emotions plus a search across the full chart.
+// Base emotion families that expand into the full chart, plus a search across it.
 const renderPicker = (
   plugin: EmotionTrackerPlugin,
   container: HTMLElement,
   onPick: (emotion: string) => void,
 ) => {
   let selected: string | null = null;
-  const chips: HTMLElement[] = [];
+  const highlight = () =>
+    container.querySelectorAll<HTMLElement>(".et-chip").forEach((c) => c.toggleClass("is-selected", c.dataset.name === selected));
 
-  const chip = (parent: HTMLElement, name: string) => {
+  const chip = (parent: HTMLElement, name: string, color = plugin.store.colorOf(name)) => {
     const el = parent.createEl("button", { cls: "et-chip", text: name });
-    el.style.setProperty("--et-color", plugin.store.colorOf(name));
+    el.style.setProperty("--et-color", color);
     el.dataset.name = name;
     el.onclick = () => {
       selected = name;
-      chips.forEach((c) => c.toggleClass("is-selected", c.dataset.name === name));
-      el.addClass("is-selected");
+      highlight();
       onPick(name);
     };
-    chips.push(el);
     return el;
   };
 
-  const tracked = container.createDiv({ cls: "et-chips" });
-  plugin.settings.tracked.forEach((t) => chip(tracked, t.name));
+  const group = (parent: HTMLElement, f: Family, emotions: string[]) => {
+    const g = parent.createDiv({ cls: "et-group" });
+    const head = g.createDiv({ cls: "et-group-head" });
+    head.createSpan({ cls: "et-hint-family", text: f.name }).style.backgroundColor = f.color;
+    head.createSpan({ cls: "et-hint-action", text: f.action });
+    const row = g.createDiv({ cls: "et-chips" });
+    [...new Set(emotions)].forEach((e) => chip(row, e, f.color));
+  };
+
+  const families = container.createDiv({ cls: "et-families" });
+  const panel = container.createDiv({ cls: "et-results" });
+  let open: string | null = null;
+  const tabs = CHART.map((f) => {
+    const tab = families.createEl("button", { cls: "et-family-tab", text: f.name });
+    tab.style.setProperty("--et-color", f.color);
+    tab.onclick = () => {
+      open = open === f.name ? null : f.name;
+      search.value = "";
+      showFamily();
+    };
+    return tab;
+  });
+  const showFamily = () => {
+    panel.empty();
+    tabs.forEach((t) => t.toggleClass("is-open", t.textContent === open));
+    const f = CHART.find((x) => x.name === open);
+    if (f) group(panel, f, [f.name, ...f.emotions]);
+    highlight();
+  };
 
   const search = container.createEl("input", {
     cls: "et-search",
     attr: { type: "search", placeholder: "Search the emotion chart or type your own" },
   });
-  const results = container.createDiv({ cls: "et-results" });
 
   search.oninput = () => {
-    results.empty();
-    chips.length = plugin.settings.tracked.length;
+    open = null;
+    panel.empty();
+    tabs.forEach((t) => t.removeClass("is-open"));
     const q = search.value.trim().toLowerCase();
     if (!q) return;
     for (const f of CHART) {
       const hits = f.emotions.filter((e) => e.toLowerCase().includes(q) || f.name.toLowerCase().includes(q));
-      if (!hits.length) continue;
-      const group = results.createDiv({ cls: "et-group" });
-      const head = group.createDiv({ cls: "et-group-head" });
-      head.createSpan({ cls: "et-hint-family", text: f.name }).style.backgroundColor = f.color;
-      head.createSpan({ cls: "et-hint-action", text: f.action });
-      const row = group.createDiv({ cls: "et-chips" });
-      [...new Set(hits)].forEach((e) => chip(row, e));
+      if (hits.length) group(panel, f, hits);
     }
-    const known = [...plugin.settings.tracked.map((t) => t.name), ...CHART.flatMap((f) => f.emotions)];
+    const known = CHART.flatMap((f) => [f.name, ...f.emotions]);
     if (!known.some((e) => e.toLowerCase().includes(q))) {
-      const custom = results.createDiv({ cls: "et-chips" });
+      const custom = panel.createDiv({ cls: "et-chips" });
       const raw = search.value.trim().replace(/\|/g, "/");
       chip(custom, raw[0].toUpperCase() + raw.slice(1)).addClass("et-chip-custom");
     }
-    if (selected) chips.forEach((c) => c.toggleClass("is-selected", c.dataset.name === selected));
+    highlight();
   };
   return search;
 };

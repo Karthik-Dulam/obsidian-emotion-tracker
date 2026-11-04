@@ -80,5 +80,16 @@ export const CHART: Family[] = [
   },
 ];
 
-export const familiesOf = (emotion: string): Family[] =>
-  CHART.filter((f) => f.emotions.some((e) => e.toLowerCase() === emotion.toLowerCase()));
+// Everyday words that aren't on the chart, mapped to their family.
+const ALIASES: Record<string, string> = {
+  happy: "Joy", joyful: "Joy", sad: "Sadness", upset: "Sadness", calm: "Content", relaxed: "Content",
+  excited: "Excitement", loving: "Love", loved: "Love", angry: "Anger", cranky: "Anger", fearful: "Fear",
+  disgusted: "Disgust", irritated: "Disgust", guilt: "Regret", regretful: "Regret",
+};
+
+export const familiesOf = (emotion: string): Family[] => {
+  const q = emotion.toLowerCase();
+  return CHART.filter(
+    (f) => f.name.toLowerCase() === q || ALIASES[q] === f.name || f.emotions.some((e) => e.toLowerCase() === q),
+  );
+};

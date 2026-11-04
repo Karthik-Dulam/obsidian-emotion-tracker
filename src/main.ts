@@ -1,6 +1,5 @@
 import { App, Platform, Plugin, PluginSettingTab, Setting, moment } from "obsidian";
 import { DEFAULT_SETTINGS, Settings, Store } from "./data";
-import { familiesOf } from "./chart";
 import { LogModal, MoodModal } from "./modals";
 import { TrackerBlock, TrackerView, VIEW_TYPE } from "./views";
 
@@ -68,47 +67,6 @@ class SettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     const s = this.plugin.settings;
     containerEl.empty();
-
-    new Setting(containerEl).setName("Tracked emotions").setHeading()
-      .setDesc("Shown as quick buttons when logging. Emotions picked from the chart use their family colour.");
-    s.tracked.forEach((t, i) => {
-      const fam = familiesOf(t.name).map((f) => f.name).join(", ");
-      new Setting(containerEl)
-        .setDesc(fam)
-        .addText((txt) =>
-          txt.setValue(t.name).onChange(async (v) => {
-            t.name = v.trim();
-            await this.plugin.saveSettings();
-          }),
-        )
-        .addColorPicker((c) =>
-          c.setValue(t.color).onChange(async (v) => {
-            t.color = v;
-            await this.plugin.saveSettings();
-          }),
-        )
-        .addExtraButton((b) =>
-          b.setIcon("arrow-up").setTooltip("Move up").setDisabled(i === 0).onClick(async () => {
-            [s.tracked[i - 1], s.tracked[i]] = [s.tracked[i], s.tracked[i - 1]];
-            await this.plugin.saveSettings();
-            this.display();
-          }),
-        )
-        .addExtraButton((b) =>
-          b.setIcon("trash").setTooltip("Remove").onClick(async () => {
-            s.tracked.splice(i, 1);
-            await this.plugin.saveSettings();
-            this.display();
-          }),
-        );
-    });
-    new Setting(containerEl).addButton((b) =>
-      b.setButtonText("Add emotion").onClick(async () => {
-        s.tracked.push({ name: "New", color: "#888888" });
-        await this.plugin.saveSettings();
-        this.display();
-      }),
-    );
 
     new Setting(containerEl).setName("Time slots").setHeading()
       .setDesc("Start time of each slot in the week view. Times before the first slot count as the last slot.");

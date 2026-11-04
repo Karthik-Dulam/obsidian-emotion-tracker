@@ -1,33 +1,11 @@
 import { App, TFile, moment, normalizePath } from "obsidian";
 import { familiesOf } from "./chart";
 
-export interface Tracked {
-  name: string;
-  color: string;
-}
-
 export interface Settings {
-  tracked: Tracked[];
   slots: { name: string; start: string }[];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  tracked: [
-    { name: "Happy", color: "#F5C518" },
-    { name: "Grateful", color: "#E8743A" },
-    { name: "Calm", color: "#4FB3BF" },
-    { name: "Content", color: "#7E57C2" },
-    { name: "Excited", color: "#2E9E5B" },
-    { name: "Interested", color: "#F0A02A" },
-    { name: "Proud", color: "#0B6E4F" },
-    { name: "Loving", color: "#E05B9C" },
-    { name: "Stressed", color: "#D32F2F" },
-    { name: "Worried", color: "#3949AB" },
-    { name: "Frustrated", color: "#8D1C1C" },
-    { name: "Sad", color: "#5C7A99" },
-    { name: "Lonely", color: "#6D4C41" },
-    { name: "Tired", color: "#9E9E9E" },
-  ],
   slots: [
     { name: "Early morning", start: "04:00" },
     { name: "Morning", start: "08:00" },
@@ -164,8 +142,7 @@ export class Store {
   }
 
   colorOf(emotion: string): string {
-    const t = this.settings().tracked.find((x) => x.name.toLowerCase() === emotion.toLowerCase());
-    return t?.color ?? familiesOf(emotion)[0]?.color ?? "#888888";
+    return familiesOf(emotion)[0]?.color ?? "#888888";
   }
 
   slotOf(time: string): number {

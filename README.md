@@ -5,8 +5,9 @@ Based on the [Therapy in a Nutshell emotion tracker](https://therapyinanutshell.
 
 ## Features
 
-- **Log emotion** (ribbon, command, mobile toolbar): pick from your tracked emotions or search the full
-  emotion chart (10 families, each with its suggested action), add an optional note, done.
+- **Log emotion** (ribbon, command, mobile toolbar): tap one of the 10 base emotion families to expand it,
+  pick the family itself or a more specific emotion, or search the chart. Each family shows its suggested action.
+  Colours come from the chart's families.
 - **Week view**: 7 days by 5 time slots (early morning, morning, afternoon, evening, before bed). Tap a cell to log into it.
 - **Year view**: one coloured square per day showing that day's mood. Tap a day to set the mood or open the note.
 - **Embeds**: put `emotion-week` or `emotion-year` code blocks in any note.

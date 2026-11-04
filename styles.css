@@ -20,6 +20,20 @@
 .et-chip.is-selected { background: var(--et-color); color: #fff; font-weight: 600; }
 .et-chip-custom { border-style: dashed; }
 
+.et-families { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.et-family-tab {
+  --et-color: #888;
+  background: color-mix(in srgb, var(--et-color) 25%, transparent);
+  border-bottom: 3px solid var(--et-color);
+  color: var(--text-normal);
+  box-shadow: none;
+  border-radius: 8px;
+  padding: 8px 6px;
+  min-height: 40px;
+  font-size: 0.95em;
+}
+.et-family-tab.is-open { background: var(--et-color); color: #fff; font-weight: 600; }
+
 .et-search, .et-note { width: 100%; font-size: 1em; padding: 8px 10px; }
 .et-results { display: flex; flex-direction: column; gap: 8px; max-height: 40vh; overflow-y: auto; }
 .et-results:empty { display: none; }
@@ -27,6 +41,7 @@
 .et-hint-family { color: #fff; border-radius: 4px; padding: 1px 6px; font-weight: 600; }
 .et-hint-action { color: var(--text-muted); }
 .et-hint:empty { display: none; }
+.et-hint-emotion { font-weight: 700; font-size: 1.1em; }
 
 .et-existing-head { font-size: 0.85em; color: var(--text-muted); margin-bottom: 4px; }
 .et-entry { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.9em; }
@@ -104,6 +119,7 @@
 .et-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; font-size: 0.8em; color: var(--text-muted); }
 .et-legend-item { display: flex; align-items: center; gap: 4px; }
 
+.is-mobile .et-family-tab { min-height: 46px; }
 .is-mobile .et-chip { min-height: 40px; padding: 8px 14px; }
 .is-mobile .et-cell { min-height: 52px; }
 .is-mobile .et-year-cell { height: 16px; }
