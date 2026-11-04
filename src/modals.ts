@@ -105,9 +105,18 @@ export class LogModal extends Modal {
   async onOpen() {
     const { contentEl } = this;
     this.modalEl.addClass("et-modal");
-    this.setTitle(`How are you feeling? · ${this.date.format("ddd D MMM")}`);
+    const setTitle = () => this.setTitle(`How are you feeling? · ${this.date.format("ddd D MMM")}`);
+    setTitle();
 
     const timeRow = contentEl.createDiv({ cls: "et-time-row" });
+    const dateInput = timeRow.createEl("input", { attr: { type: "date" }, value: this.date.format("YYYY-MM-DD") });
+    dateInput.onchange = () => {
+      const d = moment(dateInput.value, "YYYY-MM-DD", true);
+      if (!d.isValid()) return;
+      this.date = d;
+      setTitle();
+      this.renderExisting(existing);
+    };
     const timeInput = timeRow.createEl("input", { attr: { type: "time" }, value: this.time });
     const slotLabel = timeRow.createSpan({ cls: "et-slot-label" });
     const updateSlot = () => (slotLabel.textContent = this.plugin.settings.slots[this.plugin.store.slotOf(this.time)].name);
@@ -139,7 +148,8 @@ export class LogModal extends Modal {
       save = b.setButtonText("Log").setCta().setDisabled(true).onClick(() => this.save());
     });
 
-    await this.renderExisting(contentEl.createDiv({ cls: "et-existing" }));
+    const existing = contentEl.createDiv({ cls: "et-existing" });
+    await this.renderExisting(existing);
   }
 
   private async renderExisting(el: HTMLElement) {

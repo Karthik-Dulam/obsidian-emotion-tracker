@@ -1,7 +1,8 @@
 .et-modal .modal-content { display: flex; flex-direction: column; gap: 10px; }
 
 .et-time-row { display: flex; align-items: center; gap: 10px; }
-.et-time-row input[type="time"] { font-size: 1.05em; }
+.et-time-row { flex-wrap: wrap; }
+.et-time-row input[type="time"], .et-time-row input[type="date"] { font-size: 1.05em; }
 .et-slot-label { color: var(--text-muted); font-size: 0.9em; }
 
 .et-chips { display: flex; flex-wrap: wrap; gap: 6px; }
