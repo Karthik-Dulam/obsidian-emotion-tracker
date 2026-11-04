@@ -130,7 +130,9 @@ export class LogModal extends Modal {
       attr: { type: "text", placeholder: "What are you doing? (optional)" },
     });
     noteInput.oninput = () => (this.note = noteInput.value);
-    noteInput.onkeydown = (ev) => ev.key === "Enter" && this.save();
+    noteInput.onkeydown = (ev) => {
+      if (ev.key === "Enter") this.save();
+    };
 
     let save!: import("obsidian").ButtonComponent;
     new Setting(contentEl).addButton((b) => {
